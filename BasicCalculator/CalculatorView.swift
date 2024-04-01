@@ -7,11 +7,47 @@
 
 import SwiftUI
 
+/*
+ TEST CASES:
+ 
+Operator, Operand
+ * 1                0 (*)
+ + 5                5 (+)
+ 
+ Operator, Operand, Operand, Operand, Operator
+ + 435 -            435 (+/-)
+ 
+Operator, Operator, equals
+ + - =              0 (+/-/=)
+ 
+Operator, operator, operand
+ + - 5 =            -5 (+/-)
+ 
+ Operand
+ 5 =                5
+ 5 + =              5
+ 5 + = = =          5
+ 2 + 2 - 3          4, 1
+ 
+Errors
+ / 0                ERR
+ / 0 +              Err
+ / 0 + 6            Err
+ / 0 + 6 - 3 =      3 (6-3)
+ / 0 Sin            Err
+ / 0 Sin Sin        Err
+ 
+ Decimals
+ 2.....5            2.5
+ 0.2 =              0.2
+ 2.500000            2.5
+ 0.0                0
+
+ */
+
+
 struct CalculatorView: View {
     @ObservedObject var viewModel: CalculatorViewModel
-    
-    let columns = [GridItem(.flexible(minimum: 50)), GridItem(.flexible(minimum: 50)), GridItem(.flexible(minimum: 50)), GridItem(.flexible(minimum: 50))]
-    
     init() {
         self.viewModel = CalculatorViewModel()
     }
@@ -19,78 +55,51 @@ struct CalculatorView: View {
     var body: some View {
         VStack {
             Spacer()
-            Text(viewModel.cumulativeResult)
+            Text(viewModel.operationQueue.toString())
+            Text(viewModel.operationQueue.lastInputValue)
                 .font(.title)
                 .padding(.horizontal, 50)
                 .frame(maxWidth: .infinity, alignment: .trailing)
-            Text(viewModel.display)
-                .font(.title)
-                .padding(.horizontal, 50)
-                .frame(maxWidth: .infinity, alignment: .trailing)
-            LazyVGrid(columns: columns, content: {
-                
-                OperandButton(value: "7") { viewModel.pressedNumber("7") }
-                OperandButton(value: "8") { viewModel.pressedNumber("8") }
-                OperandButton(value: "9") { viewModel.pressedNumber("9") }
-                OperatorButton(value: "/") { viewModel.pressedOperator(.divide) }
-                
-                OperandButton(value: "4") { viewModel.pressedNumber("4") }
-                OperandButton(value: "5") { viewModel.pressedNumber("5") }
-                OperandButton(value: "6") { viewModel.pressedNumber("6") }
-                OperatorButton(value: "x") { viewModel.pressedOperator(.multiply) }
-                
-                OperandButton(value: "1") { viewModel.pressedNumber("1") }
-                OperandButton(value: "2") { viewModel.pressedNumber("2") }
-                OperandButton(value: "3") { viewModel.pressedNumber("3") }
-                OperatorButton(value: "-") { viewModel.pressedOperator(.subtract) }
-                
-                OperandButton(value: "0") { viewModel.pressedNumber("0") }
-//                OperandButton(value: ".") { viewModel.pressedNumber(".") }
-                OperatorButton(value: "AC") { viewModel.allClear() }
-                OperatorButton(value: "+") { viewModel.pressedOperator(.add) }
-                OperatorButton(value: "=") { viewModel.calculate() }
-                
-                OperatorButton(value: "Sin") { viewModel.pressedOperator(.sin) }
-                OperatorButton(value: "Cos") { viewModel.pressedOperator(.cos) }
-                OperatorButton(value: "Tan") { viewModel.pressedOperator(.tan) }
-            })
+            ButtonGrid(pressInput: viewModel.gotInput, pressEquals: viewModel.pressedEquals, pressClear: viewModel.allClear)
         }
         .padding()
     }
 }
 
-struct OperatorButton: View {
-    let value: String
-    let onButtonPress: () -> Void
+struct ButtonGrid: View {
+    let columns = [GridItem(.flexible(minimum: 50)), GridItem(.flexible(minimum: 50)), GridItem(.flexible(minimum: 50)), GridItem(.flexible(minimum: 50))]
+    let pressInput: (String) -> Void
+    let pressEquals: () -> Void
+    let pressClear: () -> Void
     
     var body: some View {
-        Button {
-            onButtonPress()
-        } label: {
-            Text(value)
-                .font(.title2)
-                .frame(width: 75, height: 75)
-                .background(.orange.opacity(0.3))
-                .clipShape(RoundedRectangle(cornerRadius: 20))
-        }
-    }
-}
-
-
-struct OperandButton: View {
-    let value: String
-    let onButtonPress: () -> Void
-    
-    var body: some View {
-        Button {
-            onButtonPress()
-        } label: {
-            Text(value)
-                .font(.title2)
-                .frame(width: 75, height: 75)
-                .background(.blue.opacity(0.3))
-                .clipShape(RoundedRectangle(cornerRadius: 20))
-        }
+        LazyVGrid(columns: columns, content: {
+            
+            CalculatorButton(value: "7", isOperator: false) { pressInput("7") }
+            CalculatorButton(value: "8", isOperator: false) { pressInput("8") }
+            CalculatorButton(value: "9", isOperator: false) { pressInput("9") }
+            CalculatorButton(value: "/", isOperator: true) { pressInput("/") }
+            
+            CalculatorButton(value: "4", isOperator: false) { pressInput("4") }
+            CalculatorButton(value: "5", isOperator: false) { pressInput("5") }
+            CalculatorButton(value: "6", isOperator: false) { pressInput("6") }
+            CalculatorButton(value: "x", isOperator: true) { pressInput("x") }
+            
+            CalculatorButton(value: "1", isOperator: false) { pressInput("1") }
+            CalculatorButton(value: "2", isOperator: false) { pressInput("2") }
+            CalculatorButton(value: "3", isOperator: false) { pressInput("3") }
+            CalculatorButton(value: "-", isOperator: true) { pressInput("-") }
+            
+            CalculatorButton(value: "0", isOperator: false) { pressInput("0") }
+            CalculatorButton(value: ".", isOperator: false) { pressInput(".") }
+            CalculatorButton(value: "AC", isOperator: true) { pressClear() }
+            CalculatorButton(value: "+", isOperator: true) { pressInput("+") }
+            
+            CalculatorButton(value: "Sin", isOperator: true) { pressInput("Sin") }
+            CalculatorButton(value: "Cos", isOperator: true) { pressInput("Cos") }
+            CalculatorButton(value: "Tan", isOperator: true) { pressInput("Tan") }
+            CalculatorButton(value: "=", isOperator: true) { pressEquals() }
+        })
     }
 }
 

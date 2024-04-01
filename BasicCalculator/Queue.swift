@@ -34,17 +34,34 @@ import Foundation
     }
 }
 
-// TODO: throw errors on failure
-struct Queue {
+struct OperationQueue {
     private var items = ["0"]
     var count: Int { items.count }
-    
+    var lastInputValue: String {
+        let index = items.lastIndex(where: {$0.isOperand()}) ?? 0
+        return items[index]
+    }
+        
     var hasComputableUnaryOperator: Bool {
         return (items.count == 2 && items[1].isUnaryOperator() && items[0].isOperand())
     }
     var hasComputableBinaryOperator: Bool {
         return (items.count == 3 && items[2].isOperand() &&
-                items[1].isBinaryOperator() && items[0].isOperator())
+                items[1].isBinaryOperator() && items[0].isOperand())
+    }
+    
+    func toString() -> String {
+        var str = "["
+        for item in items {
+            if item == "ERR" {
+                str.append(contentsOf: item)
+            } else {
+                str.append(item)
+            }
+            str.append(", ")
+        }
+        str.append("]")
+        return str
     }
     
     mutating func push(_ item: String) {
@@ -57,7 +74,7 @@ struct Queue {
     
     mutating func appendToLast(_ item: String) {
         guard !self.isEmpty() else { return }
-        items[items.count - 1].append(item)
+        items[items.count - 1].append(contentsOf: item)
     }
     
     func peek() -> String {
@@ -65,7 +82,7 @@ struct Queue {
     }
     
     func isEmpty() -> Bool {
-        return items.count > 0
+        return items.count == 0
     }
         
     mutating func clear() {
@@ -77,89 +94,97 @@ struct Queue {
     }
     
     func canCompute() -> Bool {
-        let hasComputableUnaryOperator = (items.count == 2 && items[1].isUnaryOperator() && items[0].isOperand())
-        let hasComputableBinaryOperator = (items.count == 3 && 
-                                           items[2].isOperand() &&
-                                           items[1].isBinaryOperator() &&
-                                           items[0].isOperator())
-        
         return hasComputableUnaryOperator || hasComputableBinaryOperator
     }
 
-    mutating func compute() -> Double {
+    func compute(onError: () -> Void) -> String {
+        assert(hasComputableUnaryOperator || hasComputableBinaryOperator)
+        
+        var result = ""
         if hasComputableUnaryOperator {
-           return doMath(action: items[1].toOperator(), operandA: items[0])
+            result = doMath(action: items[1].toOperator(), operandA: items[0].toOperand())
         } else { // hasComputableBinaryOperator
-            return doMath(action: items[1].toOperator, operandA: items[0], operandB: items[2])
-        }
-    }
-
-    mutating func computeEquals() -> Double { // pressed Equal --> must calculate with whatever we have
-        if items.count == 1 { // only can be number - default starts with 0, so can't start with operator
-            let item = self.pop()
-            assert(item.isOperand())
-            return Double(item) ?? 0.0
-            
-        } else if items.count == 2 { // [operator, operand] || [operand, operator]
-            let secondItem = self.pop()
-            let firstItem = self.pop()
-            
-            // MARK: case - [operator, operand]
-            if lastItem.isOperand() {
-                let operandB = lastItem.toOperand()
-                let action = self.pop()
-//                    action.isOperator()
-//                guard action.isBin
-                
-                if lastItem.isUnaryOperator() {
-                    return doMath(action: lastItem.toOperator(), operandA: self.pop().toOperand())
-                } else { // binary operator
-                    let operandA = self.pop().toOperand()
-                    return doMath(action: lastItem.toOperator(), operandA: operandA, operandB: operandA)
-                }
-                
-            } else { // MARK: case - [operand, operator]
-                let lastItem = self.pop()
-                if lastItem.isOperator() {
-                    if lastItem.isUnaryOperator() {
-                        return doMath(action: lastItem.toOperator(), operandA: self.pop().toOperand())
-                    } else { // binary operator
-                        let operandA = self.pop().toOperand()
-                        return doMath(action: lastItem.toOperator(), operandA: operandA, operandB: operandA)
-                    }
-                }
-            }
-        } else { // items.count = 3
-            guard let operandB = self.pop(), operandB.isOperand(),
-                  let action = self.pop(), action.isOperator(),
-                  let operandA = self.pop(), operandA.isOperand()
-            else { return 0.0 }
+            result = doMath(action: items[1].toOperator(), operandA: items[0].toOperand(), operandB: items[2].toOperand())
         }
         
-    }
-                        
-    func doMath(action: OperatorAction, operandA: Double, operandB: Double=0) -> Double {
-        switch(action){
-        case .add:
-            return operandA + operandB
-        case .subtract:
-            return operandA - operandB
-        case .multiply:
-            return operandA * operandB
-        case .divide:
-            return operandA / operandB
-        case .sin:
-            return sin(operandA)
-        case .cos:
-            return cos(operandA)
-        case .tan:
-            return tan(operandA)
-        case .none:
-            return 0
-        case .equals:
-            return operandA
+        if result == "ERR" {
+            onError()
         }
+        
+        return result
     }
 
-  
+    func computeEquals(onError: () -> Void) -> String { // pressed Equal --> must calculate with whatever we have
+        if items.count == 1 { // only can be number - default starts with 0, so can't start with operator
+            assert(items[0].isOperand())
+            
+            let result = doMath(action: .equals, operandA: items[0].toOperand())
+            if result == "ERR" {
+                onError()
+            }
+            return result
+        } else if items.count == 2 { // [operand, operator] -- queue initialized with "0", so [operator, operand] will never happen
+            let secondItem = items[1]
+            let firstItem = items[0]
+            assert(secondItem.isOperator())
+            assert(firstItem.isOperand())
+            
+            var result = ""
+            if secondItem.isUnaryOperator() {
+                result = doMath(action: secondItem.toOperator(), operandA: firstItem.toOperand())
+            } else {
+                result = doMath(action: .equals, operandA: firstItem.toOperand())
+            }
+            
+            if result == "ERR" {
+                onError()
+            }
+            return result
+        } else if items.count == 3 {
+            let thirdItem = items[2]
+            let secondItem = items[1]
+            let firstItem = items[0]
+            
+            assert(thirdItem.isOperand())
+            assert(secondItem.isOperator())
+            assert(secondItem.isBinaryOperator())
+            assert(firstItem.isOperand())
+
+            let result = doMath(action: secondItem.toOperator(), operandA: firstItem.toOperand(), operandB: thirdItem.toOperand())
+            if result == "ERR" {
+                onError()
+            }
+            return result
+        } else {
+            // shouldn't get here, so fail
+            assert(items.count <= 3)
+            return "0"
+        }
+    }
+                        
+    func doMath(action: OperatorAction, operandA: Double, operandB: Double=0) -> String {
+        switch(action){
+        case .add:
+            return String(format: "%g", operandA + operandB)
+        case .subtract:
+            return String(format: "%g", operandA - operandB)
+        case .multiply:
+            return String(format: "%g", operandA * operandB)
+        case .divide:
+            if operandB == 0 {
+                return "ERR"
+            }
+            return String(format: "%g", operandA / operandB)
+        case .sin:
+            return String(format: "%g", sin(operandA))
+        case .cos:
+            return String(format: "%g", cos(operandA))
+        case .tan:
+            return String(format: "%g", tan(operandA))
+        case .none:
+            return "0"
+        case .equals:
+            return String(format: "%g", operandA)
+        }
+    }
 }

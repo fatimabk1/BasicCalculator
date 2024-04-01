@@ -8,24 +8,23 @@
 import Foundation
 
 
-// TODO: throw errors on failure
 extension String {
     func isOperator() -> Bool {
-        ["+", "-", "x", "/", "sin", "cos", "tan"].contains(where: {$0 == self})
+        ["+", "-", "x", "/", "Sin", "Cos", "Tan"].contains(where: {$0 == self})
     }
     
     func isUnaryOperator() -> Bool {
-        ["sin", "cos", "tan"].contains(where: {$0 == self})
+        ["Sin", "Cos", "Tan"].contains(where: {$0 == self})
     }
     
     func isBinaryOperator() -> Bool {
         ["+", "-", "x", "/"].contains(where: {$0 == self})
     }
-    
+        
     func isOperand() -> Bool {
-        let digits = CharacterSet.decimalDigits
-        let stringCharacters = CharacterSet(charactersIn: self)
-        return digits.isSuperset(of: stringCharacters)
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .decimal
+        return formatter.number(from:self) != nil || self == "."
     }
     
     func toOperand() -> Double {
@@ -42,20 +41,16 @@ extension String {
                 .multiply
         case "/":
                 .divide
-        case "sin":
+        case "Sin":
                 .sin
-        case "cos":
+        case "Cos":
                 .cos
-        case "tan":
+        case "Tan":
                 .tan
         case "_":
                 .none
         default:
                 .none
         }
-    }
-    
-    func isEquals() -> Bool {
-        return self == "="
     }
 }
