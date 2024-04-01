@@ -14,8 +14,8 @@
             filePath = "BasicCalculator/Queue.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "147"
-            endingLineNumber = "147"
+            startingLineNumber = "152"
+            endingLineNumber = "152"
             landmarkName = "computeEquals(onError:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -30,8 +30,8 @@
             filePath = "BasicCalculator/Queue.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "165"
-            endingLineNumber = "165"
+            startingLineNumber = "170"
+            endingLineNumber = "170"
             landmarkName = "doMath(action:operandA:operandB:)"
             landmarkType = "7">
             <Locations>
@@ -108,8 +108,8 @@
             filePath = "BasicCalculator/CalculatorViewModel.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "74"
-            endingLineNumber = "74"
+            startingLineNumber = "120"
+            endingLineNumber = "120"
             landmarkName = "gotInput(_:)"
             landmarkType = "7">
             <Locations>
@@ -149,38 +149,6 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "DC134D9B-9AD9-484F-9E15-DE22D9A1BD0E"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "BasicCalculator/CalculatorViewModel.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "81"
-            endingLineNumber = "81"
-            landmarkName = "gotInput(_:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "69CFFDA7-1854-4B1E-A3D8-680A1A9A4797"
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "BasicCalculator/CalculatorViewModel.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "51"
-            endingLineNumber = "51"
-            landmarkName = "gotInput(_:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
             uuid = "8D644E2C-0608-4862-8101-3F1CD108CDC5"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
@@ -188,8 +156,8 @@
             filePath = "BasicCalculator/CalculatorViewModel.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "62"
-            endingLineNumber = "62"
+            startingLineNumber = "107"
+            endingLineNumber = "107"
             landmarkName = "gotInput(_:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -197,63 +165,31 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "44C1F110-BABA-492E-BBA4-BCF87A2E2606"
-            shouldBeEnabled = "No"
+            uuid = "C20A88B0-A042-425E-B4F4-3E18F826899F"
+            shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "BasicCalculator/CalculatorViewModel.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "85"
-            endingLineNumber = "85"
+            startingLineNumber = "124"
+            endingLineNumber = "124"
             landmarkName = "gotInput(_:)"
             landmarkType = "7">
-            <Locations>
-               <Location
-                  uuid = "44C1F110-BABA-492E-BBA4-BCF87A2E2606 - 556070a235b03266"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "BasicCalculator.CalculatorViewModel.gotInput(Swift.String) -&gt; ()"
-                  moduleName = "BasicCalculator"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/fatimakahbi/Developer/BasicCalculator/BasicCalculator/CalculatorViewModel.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "82"
-                  endingLineNumber = "82"
-                  offsetFromSymbolStart = "4340">
-               </Location>
-               <Location
-                  uuid = "44C1F110-BABA-492E-BBA4-BCF87A2E2606 - c265ee70b3bb9d1c"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "implicit closure #4 () -&gt; () in implicit closure #3 (BasicCalculator.CalculatorViewModel) -&gt; () -&gt; () in BasicCalculator.CalculatorViewModel.gotInput(Swift.String) -&gt; ()"
-                  moduleName = "BasicCalculator"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/fatimakahbi/Developer/BasicCalculator/BasicCalculator/CalculatorViewModel.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "82"
-                  endingLineNumber = "82"
-                  offsetFromSymbolStart = "48">
-               </Location>
-            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "4A491CBC-6699-4F0E-841B-136C89066F1F"
-            shouldBeEnabled = "No"
+            uuid = "CB136172-540B-4496-9B8B-2AFFC3DE9C3D"
+            shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "BasicCalculator/CalculatorViewModel.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "80"
-            endingLineNumber = "80"
+            startingLineNumber = "121"
+            endingLineNumber = "121"
             landmarkName = "gotInput(_:)"
             landmarkType = "7">
          </BreakpointContent>

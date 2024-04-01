@@ -72,6 +72,11 @@ struct OperationQueue {
         return items.popLast() ?? "0"
     }
     
+    mutating func replace(_ input: String) {
+        _ = self.pop()
+        self.push(input)
+    }
+    
     mutating func appendToLast(_ item: String) {
         guard !self.isEmpty() else { return }
         items[items.count - 1].append(contentsOf: item)

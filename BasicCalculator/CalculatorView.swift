@@ -7,44 +7,6 @@
 
 import SwiftUI
 
-/*
- TEST CASES:
- 
-Operator, Operand
- * 1                0 (*)
- + 5                5 (+)
- 
- Operator, Operand, Operand, Operand, Operator
- + 435 -            435 (+/-)
- 
-Operator, Operator, equals
- + - =              0 (+/-/=)
- 
-Operator, operator, operand
- + - 5 =            -5 (+/-)
- 
- Operand
- 5 =                5
- 5 + =              5
- 5 + = = =          5
- 2 + 2 - 3          4, 1
- 
-Errors
- / 0                ERR
- / 0 +              Err
- / 0 + 6            Err
- / 0 + 6 - 3 =      3 (6-3)
- / 0 Sin            Err
- / 0 Sin Sin        Err
- 
- Decimals
- 2.....5            2.5
- 0.2 =              0.2
- 2.500000            2.5
- 0.0                0
-
- */
-
 
 struct CalculatorView: View {
     @ObservedObject var viewModel: CalculatorViewModel
@@ -55,7 +17,6 @@ struct CalculatorView: View {
     var body: some View {
         VStack {
             Spacer()
-            Text(viewModel.operationQueue.toString())
             Text(viewModel.operationQueue.lastInputValue)
                 .font(.title)
                 .padding(.horizontal, 50)

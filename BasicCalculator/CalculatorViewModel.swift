@@ -42,20 +42,65 @@ final class CalculatorViewModel: ObservableObject {
         updateDisplay()
     }
     
-    // TODO: 6 * 2.5 + sin --> should immediately evalue on sin, but isn't.
+    /*
+     
+     hasError = false
+     newCalculation = false
+     
+     func gotInput(_ input: String) {
+        GOT NUMBER
+            if prev is Err
+                replace
+                return
+            if new calcuation
+                push input
+                newCalculation = false
+            else
+                if prev is number
+                    if number is decimal and input is decimal
+                        ignore
+                    else
+                        append input
+                else
+                    push input
+     
+        GOT OPERATOR
+            if prev is operator
+                replace with input (pop, push) -- if this is unary operator, evaluate immediately
+                compute
+            else
+                if canCompute --> check not error
+                    compute, clear, push result
+                if no error
+                    push input [- / sin]
+                if canCompute
+                    compute, clear, push result
+        update display
+     
+     */
+    
+    func computeAndUpdate() {
+        let result = operationQueue.compute(onError: setError)
+        operationQueue.clear()
+        operationQueue.push(result)
+    }
+    
+    // TODO: 6 * 2.5 + sin
+    // TODO: 0 / 0 SIN
     func gotInput(_ input: String) {
         print("\nOperationQueue: \(operationQueue.toString()), Input: \(input)")
+        
         if input.isOperand() {
-            if newCalculation {
+            if hasError {
+                operationQueue.replace(input)
+                hasError = false
+                newCalculation = false
+            } else if newCalculation {
                 print("\t got number, new calculation")
-                if operationQueue.peek().isOperand() || operationQueue.peek() == "ERR" {
-                    _ = operationQueue.pop()
-                    hasError = false
-                    operationQueue.push(input)
-                    print("\t replaced default 0 with new vlalue")
+                if operationQueue.peek().isOperand() {
+                    operationQueue.replace(input)
                 } else {
                     operationQueue.push(input)
-                    print("\t pushed new value")
                 }
                 newCalculation = false
             } else {
@@ -63,9 +108,10 @@ final class CalculatorViewModel: ObservableObject {
                 if operationQueue.peek().isOperand(){
                     if operationQueue.peek().contains(".") && input == "."{
                         return
+                    } else {
+                        operationQueue.appendToLast(input)
+                        print("\t appending to current value")
                     }
-                    operationQueue.appendToLast(input)
-                    print("\t appending to current value")
                 } else {
                     operationQueue.push(input)
                     print("\t pushing new value")
@@ -73,39 +119,23 @@ final class CalculatorViewModel: ObservableObject {
             }
         } else if input.isOperator() {
             print("\t got operator")
-            // replace if we selected a different operator
+            
             if operationQueue.peek().isOperator() {
-                _ = operationQueue.pop()
-                operationQueue.push(input)
-                print("\t replacing previous operator")
+                operationQueue.replace(input)
+                if operationQueue.canCompute() {
+                    computeAndUpdate()
+                }
             } else {
-                // if we have binary, compute
-                let isComputable = operationQueue.canCompute()
-                if isComputable {
-                    let result = operationQueue.compute(onError: setError)
-                    operationQueue.clear()
-                    operationQueue.push(result)
-                    if !hasError {
-                        operationQueue.push(input)
-                    }
-                    print("\t computable. computed result, cleared, push result")
+                if operationQueue.canCompute() {
+                    computeAndUpdate()
                 }
-                // if we have unary, compute
-                if input.isUnaryOperator() {
-                    if hasError { return }
+                if !hasError {
                     operationQueue.push(input)
-                    let result = operationQueue.compute(onError: setError)
-                    operationQueue.clear()
-                    operationQueue.push(result)
-                    print("\t got unary operator - pushed, compute, clear, push result")
                 }
-                // if we don't have binary or unary, push
-                if !isComputable && input.isBinaryOperator() && !hasError {
-                    operationQueue.push(input)
-                    print("\t push new operator")
+                if operationQueue.canCompute() {
+                    computeAndUpdate()
                 }
             }
-
         }
         print("OperationQueue: \(operationQueue.toString())\n")
         updateDisplay()
