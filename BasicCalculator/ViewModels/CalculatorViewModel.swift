@@ -36,7 +36,6 @@ final class CalculatorViewModel: ObservableObject {
         operationQueue.resetCalculation()
         newCalculation = true
         hasError = false
-        print("Cleared queue")
         updateDisplay()
     }
 
@@ -51,40 +50,43 @@ final class CalculatorViewModel: ObservableObject {
             operationQueue.replace(input)
             hasError = false
             newCalculation = false
-        } else if newCalculation {
+            return
+        }
+        
+        if newCalculation {
             if operationQueue.peek().isOperand() {
                 operationQueue.replace(input)
             } else {
                 operationQueue.push(input)
             }
             newCalculation = false
-        } else {
-            if operationQueue.peek().isOperand(){
-                if operationQueue.peek().contains(".") && input == "."{
-                    return
-                } else {
-                    operationQueue.appendToLast(input)
-                }
-            } else {
-                operationQueue.push(input)
+            return
+        }
+        
+        if operationQueue.peek().isOperand(){
+            if operationQueue.peek().contains(".") && input == "." {
+                return
             }
+            operationQueue.appendToLast(input)
+        } else {
+            operationQueue.push(input)
         }
     }
     
     func handleOperator(_ input: String) {
         if operationQueue.peek().isOperator() {
             operationQueue.replace(input)
-            if operationQueue.canCompute() {
+            if operationQueue.canCompute {
                 computeAndUpdate()
             }
         } else {
-            if operationQueue.canCompute() {
+            if operationQueue.canCompute {
                 computeAndUpdate()
             }
             if !hasError {
                 operationQueue.push(input)
             }
-            if operationQueue.canCompute() {
+            if operationQueue.canCompute {
                 computeAndUpdate()
             }
         }
@@ -101,10 +103,15 @@ final class CalculatorViewModel: ObservableObject {
     
     func pressedEquals() {
         if hasError { return }
-        let result = operationQueue.computeEquals(onError: setError)
-        operationQueue.clear()
-        operationQueue.push(result)
-        newCalculation = true
+        let result = operationQueue.computeEquals()
+        switch result {
+        case let .success(result):
+            operationQueue.clear()
+            operationQueue.push(result)
+            newCalculation = true
+        case .failure:
+            setError()
+        }
         updateDisplay()
     }
 }
