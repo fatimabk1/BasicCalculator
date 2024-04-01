@@ -15,51 +15,64 @@ struct CalculatorView: View {
     }
     
     var body: some View {
-        VStack {
-            Spacer()
-            Text(viewModel.operationQueue.lastInputValue)
-                .font(.title)
-                .padding(.horizontal, 50)
-                .frame(maxWidth: .infinity, alignment: .trailing)
-            ButtonGrid(pressInput: viewModel.gotInput, pressEquals: viewModel.pressedEquals, pressClear: viewModel.allClear)
+        GeometryReader { geo in
+            VStack {
+                Spacer()
+                Text(viewModel.operationQueue.lastInputValue)
+                    .font(.title)
+                    .padding(.horizontal, 50)
+                    .frame(maxWidth: .infinity, alignment: .trailing)
+                ButtonGrid(pressInput: viewModel.gotInput, pressEquals: viewModel.pressedEquals, pressClear: viewModel.allClear, geo: geo)
+                    .padding(.bottom)
+                    .padding(.horizontal)
+            }
         }
-        .padding()
     }
 }
 
 struct ButtonGrid: View {
-    let columns = [GridItem(.flexible(minimum: 50)), GridItem(.flexible(minimum: 50)), GridItem(.flexible(minimum: 50)), GridItem(.flexible(minimum: 50))]
+    @State var selectedButton = ""
+    let columns = [GridItem(.flexible(minimum: 50)),
+                   GridItem(.flexible(minimum: 50)),
+                   GridItem(.flexible(minimum: 50)),
+                   GridItem(.flexible(minimum: 50))]
     let pressInput: (String) -> Void
     let pressEquals: () -> Void
     let pressClear: () -> Void
+    let geo: GeometryProxy
+    
+    
     
     var body: some View {
+        
+        let isLandscape = geo.size.width > geo.size.height
+        let idealSize = isLandscape ? geo.size.width / 14 - 10 : geo.size.width / 4 - 10
+//            let idealSize = geo.size.width / 4 - 10
         LazyVGrid(columns: columns, content: {
+            CalculatorButton(value: "7", isOperator: false, selectedButton: $selectedButton, idealSize: idealSize) { pressInput("7") }
+            CalculatorButton(value: "8", isOperator: false, selectedButton: $selectedButton, idealSize: idealSize) { pressInput("8") }
+            CalculatorButton(value: "9", isOperator: false, selectedButton: $selectedButton, idealSize: idealSize) { pressInput("9") }
+            CalculatorButton(value: "/", isOperator: true, selectedButton: $selectedButton, idealSize: idealSize) { pressInput("/") }
             
-            CalculatorButton(value: "7", isOperator: false) { pressInput("7") }
-            CalculatorButton(value: "8", isOperator: false) { pressInput("8") }
-            CalculatorButton(value: "9", isOperator: false) { pressInput("9") }
-            CalculatorButton(value: "/", isOperator: true) { pressInput("/") }
+            CalculatorButton(value: "4", isOperator: false, selectedButton: $selectedButton, idealSize: idealSize) { pressInput("4") }
+            CalculatorButton(value: "5", isOperator: false, selectedButton: $selectedButton, idealSize: idealSize) { pressInput("5") }
+            CalculatorButton(value: "6", isOperator: false, selectedButton: $selectedButton, idealSize: idealSize) { pressInput("6") }
+            CalculatorButton(value: "x", isOperator: true, selectedButton: $selectedButton, idealSize: idealSize) { pressInput("x") }
             
-            CalculatorButton(value: "4", isOperator: false) { pressInput("4") }
-            CalculatorButton(value: "5", isOperator: false) { pressInput("5") }
-            CalculatorButton(value: "6", isOperator: false) { pressInput("6") }
-            CalculatorButton(value: "x", isOperator: true) { pressInput("x") }
+            CalculatorButton(value: "1", isOperator: false, selectedButton: $selectedButton, idealSize: idealSize) { pressInput("1") }
+            CalculatorButton(value: "2", isOperator: false, selectedButton: $selectedButton, idealSize: idealSize) { pressInput("2") }
+            CalculatorButton(value: "3", isOperator: false, selectedButton: $selectedButton, idealSize: idealSize) { pressInput("3") }
+            CalculatorButton(value: "-", isOperator: true, selectedButton: $selectedButton, idealSize: idealSize) { pressInput("-") }
             
-            CalculatorButton(value: "1", isOperator: false) { pressInput("1") }
-            CalculatorButton(value: "2", isOperator: false) { pressInput("2") }
-            CalculatorButton(value: "3", isOperator: false) { pressInput("3") }
-            CalculatorButton(value: "-", isOperator: true) { pressInput("-") }
+            CalculatorButton(value: "0", isOperator: false, selectedButton: $selectedButton, idealSize: idealSize) { pressInput("0") }
+            CalculatorButton(value: ".", isOperator: false, selectedButton: $selectedButton, idealSize: idealSize) { pressInput(".") }
+            CalculatorButton(value: "AC", isOperator: true, selectedButton: $selectedButton, idealSize: idealSize) { pressClear() }
+            CalculatorButton(value: "+", isOperator: true, selectedButton: $selectedButton, idealSize: idealSize) { pressInput("+") }
             
-            CalculatorButton(value: "0", isOperator: false) { pressInput("0") }
-            CalculatorButton(value: ".", isOperator: false) { pressInput(".") }
-            CalculatorButton(value: "AC", isOperator: true) { pressClear() }
-            CalculatorButton(value: "+", isOperator: true) { pressInput("+") }
-            
-            CalculatorButton(value: "Sin", isOperator: true) { pressInput("Sin") }
-            CalculatorButton(value: "Cos", isOperator: true) { pressInput("Cos") }
-            CalculatorButton(value: "Tan", isOperator: true) { pressInput("Tan") }
-            CalculatorButton(value: "=", isOperator: true) { pressEquals() }
+            CalculatorButton(value: "Sin", isOperator: true, selectedButton: $selectedButton, idealSize: idealSize) { pressInput("Sin") }
+            CalculatorButton(value: "Cos", isOperator: true, selectedButton: $selectedButton, idealSize: idealSize) { pressInput("Cos") }
+            CalculatorButton(value: "Tan", isOperator: true, selectedButton: $selectedButton, idealSize: idealSize) { pressInput("Tan") }
+            CalculatorButton(value: "=", isOperator: true, selectedButton: $selectedButton, idealSize: idealSize) { pressEquals() }
         })
     }
 }
