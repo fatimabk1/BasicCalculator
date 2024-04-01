@@ -41,6 +41,8 @@ final class CalculatorViewModel: ObservableObject {
         print("Cleared queue")
         updateDisplay()
     }
+    
+    // TODO: 6 * 2.5 + sin --> should immediately evalue on sin, but isn't.
     func gotInput(_ input: String) {
         print("\nOperationQueue: \(operationQueue.toString()), Input: \(input)")
         if input.isOperand() {
