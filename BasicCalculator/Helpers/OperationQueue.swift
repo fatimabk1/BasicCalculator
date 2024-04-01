@@ -1,5 +1,5 @@
 //
-//  Queue.swift
+//  OperationQueue.swift
 //  BasicCalculator
 //
 //  Created by Fatima Kahbi on 3/31/24.
@@ -9,29 +9,6 @@ import Foundation
 
  enum OperatorAction {
     case add, subtract, multiply, divide, sin, cos, tan, none, equals
-
-    func toString() -> String{
-        switch(self) {
-        case .add:
-            "+"
-        case .subtract:
-            "-"
-        case .multiply:
-            "x"
-        case .divide:
-            "/"
-        case .sin:
-            "sin"
-        case .cos:
-            "cos"
-        case .tan:
-            "tan"
-        case .none:
-            "_"
-        case .equals:
-            "-"
-        }
-    }
 }
 
 struct OperationQueue {
@@ -48,20 +25,6 @@ struct OperationQueue {
     var hasComputableBinaryOperator: Bool {
         return (items.count == 3 && items[2].isOperand() &&
                 items[1].isBinaryOperator() && items[0].isOperand())
-    }
-    
-    func toString() -> String {
-        var str = "["
-        for item in items {
-            if item == "ERR" {
-                str.append(contentsOf: item)
-            } else {
-                str.append(item)
-            }
-            str.append(", ")
-        }
-        str.append("]")
-        return str
     }
     
     mutating func push(_ item: String) {
@@ -129,16 +92,16 @@ struct OperationQueue {
             }
             return result
         } else if items.count == 2 { // [operand, operator] -- queue initialized with "0", so [operator, operand] will never happen
-            let secondItem = items[1]
-            let firstItem = items[0]
-            assert(secondItem.isOperator())
-            assert(firstItem.isOperand())
+            let operation = items[1]
+            let operand = items[0]
+            assert(operation.isOperator())
+            assert(operand.isOperand())
             
             var result = ""
-            if secondItem.isUnaryOperator() {
-                result = doMath(action: secondItem.toOperator(), operandA: firstItem.toOperand())
+            if operation.isUnaryOperator() {
+                result = doMath(action: operation.toOperator(), operandA: operand.toOperand())
             } else {
-                result = doMath(action: .equals, operandA: firstItem.toOperand())
+                result = doMath(action: .equals, operandA: operand.toOperand())
             }
             
             if result == "ERR" {
@@ -146,16 +109,16 @@ struct OperationQueue {
             }
             return result
         } else if items.count == 3 {
-            let thirdItem = items[2]
-            let secondItem = items[1]
-            let firstItem = items[0]
+            let operandB = items[2]
+            let operation = items[1]
+            let operandA = items[0]
             
-            assert(thirdItem.isOperand())
-            assert(secondItem.isOperator())
-            assert(secondItem.isBinaryOperator())
-            assert(firstItem.isOperand())
+            assert(operandB.isOperand())
+            assert(operation.isOperator())
+            assert(operation.isBinaryOperator())
+            assert(operandA.isOperand())
 
-            let result = doMath(action: secondItem.toOperator(), operandA: firstItem.toOperand(), operandB: thirdItem.toOperand())
+            let result = doMath(action: operation.toOperator(), operandA: operandA.toOperand(), operandB: operandB.toOperand())
             if result == "ERR" {
                 onError()
             }
