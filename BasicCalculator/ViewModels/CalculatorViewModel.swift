@@ -111,6 +111,8 @@ final class CalculatorViewModel: ObservableObject {
             newCalculation = true
         case .failure:
             setError()
+            operationQueue.clear()
+            operationQueue.push("Err")
         }
         updateDisplay()
     }
