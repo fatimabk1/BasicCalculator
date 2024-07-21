@@ -1,5 +1,32 @@
 # CalculatorApp
-I created a calculator app modeled after the iPhone calculator, where results are computed and updated in real-time on the display. The app supports essential arithmetic operations—addition, subtraction, multiplication, and division—as well as trigonometric functions such as sine, cosine, and tangent. Notably, the calculator gracefully manages errors during computation.
+I created a calculator app modeled after the iPhone calculator, where results are computed and updated in real-time on the display. The app supports essential arithmetic operations—addition, subtraction, multiplication, and division—as well as trigonometric functions such as sine, cosine, and tangent. Notably, the calculator gracefully manages errors during computation and supports dark and light mode.
+
+## Demo
+https://github.com/user-attachments/assets/e2999bca-e816-4f03-a769-a0629bc06543
+
+
+### Math Covered in Demo
+```= --> 0
+
++ 4 + 3 = --> 7
+
+= = = --> 7
+
+AC
+
+3 + 5 + 2 = = --> 10
+
+3.3.3 / 3 --> 3.33 / 3 = 1.1
+
+AC
+
+4.651 + 12 Tan Cos x 6 / 0 + --> ERR
+
+AC
+```
+
+
+
 ## Key Design Decisions:
 - **Queue-based Token Processing**: The app utilizes a queue data structure to process tokens in sequence, ensuring accurate computation based on user input order.
 - **Separation of Concerns**: The OperationQueue handles queue functionality, computation, and error handling, while the calculator view model manages overall logic. This division streamlines code organization and improves readability.
